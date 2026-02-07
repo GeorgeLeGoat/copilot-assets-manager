@@ -1,0 +1,267 @@
+{
+  "name": "copilot-assets-manager",
+  "displayName": "Copilot Assets Manager",
+  "description": "Browse, download and keep up-to-date GitHub Copilot instructions, agents, skills and prompts from shared repositories.",
+  "version": "0.2.3",
+  "publisher": "copilot-assets",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "package": "npx -y vsce package"
+  },
+  "config": {
+    "COMMENT_vsce": "The 'vsce' CLI packages VS Code extensions. Some environments don't have 'vsce' installed globally; the 'package' script uses 'npx -y vsce package' to run it without requiring a global install."
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.19.11",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "dependencies": {
+    "minimatch": "^9.0.3"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "copilotAssetsManager",
+          "title": "Copilot Assets",
+          "icon": "resources/icons/copilot-assets.svg"
+        }
+      ]
+    },
+    "views": {
+      "copilotAssetsManager": [
+        {
+          "id": "copilotAssetsManager.assetsView",
+          "name": "Assets",
+          "icon": "resources/icons/copilot-assets.svg"
+        },
+        {
+          "id": "copilotAssetsManager.descriptionView",
+          "name": "Description",
+          "icon": "$(info)"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "copilotAssetsManager.refresh",
+        "title": "Refresh",
+        "icon": "$(refresh)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.download",
+        "title": "Download",
+        "icon": "$(cloud-download)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.downloadAll",
+        "title": "Download All",
+        "icon": "$(cloud-download)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.update",
+        "title": "Update",
+        "icon": "$(arrow-up)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.updateAll",
+        "title": "Update All",
+        "icon": "$(arrow-up)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.showDiff",
+        "title": "Show Diff",
+        "icon": "$(diff)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.openOnGithub",
+        "title": "Open on GitHub",
+        "icon": "$(link-external)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.remove",
+        "title": "Remove Asset",
+        "icon": "$(trash)",
+        "category": "Copilot Assets"
+      },
+      {
+        "command": "copilotAssetsManager.configureRepos",
+        "title": "Configure Repositories",
+        "category": "Copilot Assets"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "copilotAssetsManager.refresh",
+          "when": "view == copilotAssetsManager.assetsView",
+          "group": "navigation"
+        },
+        {
+          "command": "copilotAssetsManager.updateAll",
+          "when": "view == copilotAssetsManager.assetsView",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "copilotAssetsManager.download",
+          "when": "viewItem == asset-not-installed",
+          "group": "inline"
+        },
+        {
+          "command": "copilotAssetsManager.update",
+          "when": "viewItem == asset-update-available",
+          "group": "inline"
+        },
+        {
+          "command": "copilotAssetsManager.showDiff",
+          "when": "viewItem == asset-update-available",
+          "group": "1_actions"
+        },
+        {
+          "command": "copilotAssetsManager.openOnGithub",
+          "when": "viewItem =~ /^asset-/",
+          "group": "2_navigation"
+        },
+        {
+          "command": "copilotAssetsManager.remove",
+          "when": "viewItem =~ /^asset-(up-to-date|update-available|locally-modified)/",
+          "group": "3_destructive"
+        },
+        {
+          "command": "copilotAssetsManager.downloadAll",
+          "when": "viewItem == repository",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Copilot Assets Manager",
+      "properties": {
+        "copilotAssetsManager.repositories": {
+          "type": "array",
+          "default": [],
+          "description": "List of GitHub repositories containing Copilot assets to track.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "owner": {
+                "type": "string",
+                "description": "Repository owner (org or user)"
+              },
+              "repo": {
+                "type": "string",
+                "description": "Repository name"
+              },
+              "branch": {
+                "type": "string",
+                "default": "main",
+                "description": "Branch to track"
+              },
+              "path": {
+                "type": "string",
+                "default": "/",
+                "description": "Subdirectory to scan"
+              },
+              "label": {
+                "type": "string",
+                "description": "Display label in the tree view"
+              }
+            },
+            "required": [
+              "owner",
+              "repo"
+            ]
+          }
+        },
+        "copilotAssetsManager.githubEnterpriseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "GitHub Enterprise base URL (e.g. https://github.mycompany.com). Leave empty for github.com."
+        },
+        "copilotAssetsManager.fileExtensions": {
+          "type": "array",
+          "default": [
+            ".md",
+            ".json",
+            ".yml",
+            ".yaml",
+            ".prompt"
+          ],
+          "description": "File extensions to include when scanning repositories."
+        },
+        "copilotAssetsManager.destinationMappings": {
+          "type": "object",
+          "default": {
+            "default": ".github",
+            "rules": []
+          },
+          "description": "Base directory where downloaded assets are placed. The original repository folder structure is preserved under this directory.",
+          "properties": {
+            "default": {
+              "type": "string",
+              "description": "Default destination directory"
+            },
+            "rules": {
+              "type": "array",
+              "description": "Pattern-based destination rules",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "pattern": {
+                    "type": "string",
+                    "description": "Glob pattern to match"
+                  },
+                  "destination": {
+                    "type": "string",
+                    "description": "Destination directory for matched files"
+                  }
+                },
+                "required": [
+                  "pattern",
+                  "destination"
+                ]
+              }
+            }
+          }
+        },
+        "copilotAssetsManager.checkOnStartup": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check for asset updates when the workspace opens."
+        },
+        "copilotAssetsManager.maxDepth": {
+          "type": "number",
+          "default": 3,
+          "description": "Maximum folder depth when scanning repositories."
+        }
+      }
+    }
+  }
+}

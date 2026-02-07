@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "assets": {
+    ".github/agents/mainframe.agent.md": {
+      "source": {
+        "owner": "GeorgeLeGoat",
+        "repo": "copilotAssets",
+        "branch": "main",
+        "path": ".github/agents/mainframe.agent.md"
+      },
+      "remoteSha": "b96cee6146d2b82c073de15b95bb2902032f7b40",
+      "localContentHash": "sha256:50d4c1be0ffa53839319bf0f176d7543b781abfe19b5f2c6c8fa232a59a08b6c",
+      "installedAt": "2026-02-07T14:20:17.101Z",
+      "updatedAt": "2026-02-07T14:20:17.101Z"
+    },
+    ".github/skills/hello-world/SKILL.md": {
+      "source": {
+        "owner": "GeorgeLeGoat",
+        "repo": "copilotAssets",
+        "branch": "main",
+        "path": ".github/skills/hello-world"
+      },
+      "remoteSha": "sha256:e51833089b66c6f51e266df40ada03ceba4aab07cd08b01ea6806623e5a6fcc4",
+      "localContentHash": "sha256:66d0a3878db9d9887e8f6fb530bfbc86114bc13ca02e835a525fc8e20ed6d951",
+      "installedAt": "2026-02-07T14:35:04.068Z",
+      "updatedAt": "2026-02-07T14:35:04.068Z"
+    },
+    ".github/skills/hello-world/TEMPLATE.md": {
+      "source": {
+        "owner": "GeorgeLeGoat",
+        "repo": "copilotAssets",
+        "branch": "main",
+        "path": ".github/skills/hello-world/TEMPLATE.md"
+      },
+      "remoteSha": "33b74c379e2475995be4521df437ab60be0a00c6",
+      "localContentHash": "sha256:3309e290a6c734d8120646a05d81908ab117db479f889f677174fce437daf4f3",
+      "installedAt": "2026-02-07T14:35:04.068Z",
+      "updatedAt": "2026-02-07T14:35:04.068Z"
+    },
+    ".github/skills/hello-world/scripts/get-system-info.js": {
+      "source": {
+        "owner": "GeorgeLeGoat",
+        "repo": "copilotAssets",
+        "branch": "main",
+        "path": ".github/skills/hello-world/scripts/get-system-info.js"
+      },
+      "remoteSha": "6a2d30bc1626b8f9e45e60bf6b6b903486156a5f",
+      "localContentHash": "sha256:635c3cd7455733f54757df09fb5f970330546724d8b5b45e030fb7c0b28d3a7d",
+      "installedAt": "2026-02-07T14:35:04.068Z",
+      "updatedAt": "2026-02-07T14:35:04.068Z"
+    },
+    ".github/skills/idem-documentation/IDEM.md": {
+      "source": {
+        "owner": "GeorgeLeGoat",
+        "repo": "copilotAssets",
+        "branch": "main",
+        "path": ".github/skills/idem-documentation/IDEM.md"
+      },
+      "remoteSha": "520c911b773187ca9a07ff78db41d71a7182ee8f",
+      "localContentHash": "sha256:3e0513fa2a853d9c7d3a682d4bae0562bd0b5bb397f6f56b20a42c6d60dec9a7",
+      "installedAt": "2026-02-07T14:38:06.909Z",
+      "updatedAt": "2026-02-07T14:38:06.909Z"
+    },
+    ".github/skills/idem-documentation/SKILL.md": {
+      "source": {
+        "owner": "GeorgeLeGoat",
+        "repo": "copilotAssets",
+        "branch": "main",
+        "path": ".github/skills/idem-documentation"
+      },
+      "remoteSha": "sha256:5e0a8095f280a0635676d0d12b9d8a4c9ffe09ac8a0cfbec4f7586cb7ab6ea44",
+      "localContentHash": "sha256:24655a9590c0c52c75d13818644d4c093ae495929186840ca7336497eda91edf",
+      "installedAt": "2026-02-07T14:38:06.909Z",
+      "updatedAt": "2026-02-07T14:38:06.909Z"
+    }
+  }
+}
