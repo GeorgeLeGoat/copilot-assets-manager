@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import { Asset, AssetStatus, AssetTreeNode } from '../models/asset';
+import { TreeDecorationProvider } from './treeDecorationProvider';
 
 function statusToIcon(status: AssetStatus): vscode.ThemeIcon {
   switch (status) {
@@ -49,6 +50,7 @@ export function createFolderTreeItem(node: AssetTreeNode): vscode.TreeItem {
   const item = new vscode.TreeItem(node.label, vscode.TreeItemCollapsibleState.Expanded);
   item.iconPath = vscode.ThemeIcon.Folder;
   item.contextValue = 'folder';
+  item.resourceUri = TreeDecorationProvider.folderUri(node.remotePath || node.label);
   return item;
 }
 
@@ -56,6 +58,7 @@ export function createRepositoryTreeItem(node: AssetTreeNode): vscode.TreeItem {
   const item = new vscode.TreeItem(node.label, vscode.TreeItemCollapsibleState.Expanded);
   item.iconPath = new vscode.ThemeIcon('repo');
   item.contextValue = 'repository';
+  item.resourceUri = TreeDecorationProvider.repositoryUri(node.label);
   item.tooltip = node.repoConfig
     ? `${node.repoConfig.owner}/${node.repoConfig.repo} (${node.repoConfig.branch})`
     : node.label;

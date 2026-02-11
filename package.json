@@ -2,7 +2,7 @@
   "name": "copilot-assets-manager",
   "displayName": "Copilot Assets Manager",
   "description": "Browse, download and keep up-to-date GitHub Copilot instructions, agents, skills and prompts from shared repositories.",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "publisher": "copilot-assets",
   "engines": {
     "vscode": "^1.85.0"
@@ -271,6 +271,28 @@
           }
         }
       }
-    }
+    },
+    "colors": [
+      {
+        "id": "copilotAssetsManager.repositoryForeground",
+        "description": "Foreground color for repository nodes in the Copilot Assets Manager tree view.",
+        "defaults": {
+          "dark": "#569CD6",
+          "light": "#0451A5",
+          "highContrast": "#4FC1FF",
+          "highContrastLight": "#0451A5"
+        }
+      },
+      {
+        "id": "copilotAssetsManager.folderForeground",
+        "description": "Foreground color for folder nodes in the Copilot Assets Manager tree view.",
+        "defaults": {
+          "dark": "#C8A96E",
+          "light": "#795E26",
+          "highContrast": "#FFD37B",
+          "highContrastLight": "#795E26"
+        }
+      }
+    ]
   }
 }

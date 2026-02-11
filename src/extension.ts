@@ -6,6 +6,7 @@ import { AssetService } from './services/assetService';
 import { SyncService } from './services/syncService';
 import { AssetsTreeProvider } from './views/assetsTreeProvider';
 import { DescriptionWebviewProvider } from './views/descriptionWebviewProvider';
+import { TreeDecorationProvider } from './views/treeDecorationProvider';
 import { StatusBarManager } from './views/statusBar';
 import { AssetTreeNode, Asset } from './models/asset';
 import { onConfigurationChange, getCheckOnStartup } from './config/settings';
@@ -32,6 +33,13 @@ export function activate(context: vscode.ExtensionContext): void {
     showCollapseAll: true,
   });
   context.subscriptions.push(treeView);
+
+  // Register tree decoration provider (colors for repository and folder nodes)
+  const decorationProvider = new TreeDecorationProvider();
+  context.subscriptions.push(
+    vscode.window.registerFileDecorationProvider(decorationProvider),
+    decorationProvider
+  );
 
   // Create description webview
   const descriptionProvider = new DescriptionWebviewProvider(context.extensionUri, client);

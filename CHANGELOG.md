@@ -2,6 +2,16 @@
 
 All notable changes to the Copilot Assets Manager extension will be documented in this file.
 
+## [0.2.7] - 2026-02-07
+
+### Added
+- **Tree view colors**: Repository and folder nodes are now displayed in distinct colors for better visual hierarchy
+  - Repositories: blue (`#569CD6` dark / `#0451A5` light)
+  - Folders: gold (`#C8A96E` dark / `#795E26` light)
+  - Colors are fully customizable via `workbench.colorCustomizations`:
+    - `copilotAssetsManager.repositoryForeground`
+    - `copilotAssetsManager.folderForeground`
+
 ## [0.2.6] - 2026-02-07
 
 ### Added
