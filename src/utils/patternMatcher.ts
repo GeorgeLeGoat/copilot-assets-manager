@@ -1,6 +1,6 @@
 import { minimatch } from 'minimatch';
 import * as path from 'path';
-import { DestinationMapping, getDestinationMappings, getFileExtensions } from '../config/settings';
+import { DestinationMapping, getDestinationMappings, getFileExtensions, getExcludePatterns } from '../config/settings';
 
 export function resolveDestination(
   remotePath: string,
@@ -31,4 +31,26 @@ export function isAllowedExtension(
   const extensions = allowedExtensions ?? getFileExtensions();
   const ext = path.posix.extname(fileName).toLowerCase();
   return extensions.some((allowed) => allowed.toLowerCase() === ext);
+}
+
+/**
+ * Returns true if the given file path matches any of the exclude patterns.
+ * Patterns follow glob syntax (like .gitignore):
+ *   - "README.md"     → matches any file named README.md (any depth)
+ *   - "docs/**"       → matches everything inside docs/
+ *   - "**\/*.test.md" → matches all .test.md files
+ *   - ".github/CODEOWNERS" → matches this exact path
+ */
+export function isExcluded(filePath: string, patterns?: string[]): boolean {
+  const effectivePatterns = patterns ?? getExcludePatterns();
+  if (effectivePatterns.length === 0) {
+    return false;
+  }
+
+  // Normalize to forward slashes (GitHub paths, also handles Windows paths in tests)
+  const posixPath = filePath.replace(/\\/g, '/');
+
+  return effectivePatterns.some((pattern) =>
+    minimatch(posixPath, pattern, { matchBase: true, dot: true })
+  );
 }

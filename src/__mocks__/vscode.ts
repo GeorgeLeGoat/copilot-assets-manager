@@ -135,6 +135,7 @@ const configStore: Record<string, unknown> = {
   'copilotAssetsManager.destinationMappings': { default: '.github', rules: [] },
   'copilotAssetsManager.checkOnStartup': true,
   'copilotAssetsManager.maxDepth': 3,
+  'copilotAssetsManager.excludePatterns': [],
 };
 
 export function _setConfig(key: string, value: unknown): void {
@@ -218,6 +219,12 @@ const commands = {
 const env = {
   openExternal: vi.fn(),
 };
+
+export enum ConfigurationTarget {
+  Global = 1,
+  Workspace = 2,
+  WorkspaceFolder = 3,
+}
 
 export { workspace, authentication, commands, env };
 export const window = windowModule;

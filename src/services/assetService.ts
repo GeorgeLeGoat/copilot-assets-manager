@@ -5,9 +5,9 @@ import { GitHubTreeNode } from '../github/types';
 import { Asset, AssetStatus, ManifestAssetEntry } from '../models/asset';
 import { ManifestManager } from '../models/manifest';
 import { RepositoryConfig } from '../models/repository';
-import { getFileExtensions, getMaxDepth } from '../config/settings';
+import { getFileExtensions, getMaxDepth, getExcludePatterns } from '../config/settings';
 import { computeHash, computeFileHash } from './hashService';
-import { resolveDestination, isAllowedExtension } from '../utils/patternMatcher';
+import { resolveDestination, isAllowedExtension, isExcluded } from '../utils/patternMatcher';
 import {
   decodeBase64Content,
   writeWorkspaceFile,
@@ -64,6 +64,7 @@ export class AssetService {
     const assets: Asset[] = [];
     const allEntries = this.manifest.getAllEntries();
     const extensions = getFileExtensions();
+    const excludePatterns = getExcludePatterns();
     const processedSkills = new Set<string>();
 
     // Group files by skill directories
@@ -72,6 +73,11 @@ export class AssetService {
 
     for (const node of remoteNodes) {
       const nodePath = node.path;
+
+      // Skip files matching exclude patterns
+      if (isExcluded(nodePath, excludePatterns)) {
+        continue;
+      }
 
       // Check if this is inside a skills/ directory
       const skillMatch = nodePath.match(/^(.+\/)?skills\/([^\/]+)\//);

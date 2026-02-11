@@ -2,7 +2,7 @@
   "name": "copilot-assets-manager",
   "displayName": "Copilot Assets Manager",
   "description": "Browse, download and keep up-to-date GitHub Copilot instructions, agents, skills and prompts from shared repositories.",
-  "version": "0.2.3",
+  "version": "0.2.6",
   "publisher": "copilot-assets",
   "engines": {
     "vscode": "^1.85.0"
@@ -54,9 +54,10 @@
           "icon": "resources/icons/copilot-assets.svg"
         },
         {
-          "id": "copilotAssetsManager.descriptionView",
+          "id": "copilotAssetsManager.descriptionWebview",
           "name": "Description",
-          "icon": "$(info)"
+          "icon": "$(info)",
+          "type": "webview"
         }
       ]
     },
@@ -260,6 +261,14 @@
           "type": "number",
           "default": 3,
           "description": "Maximum folder depth when scanning repositories."
+        },
+        "copilotAssetsManager.excludePatterns": {
+          "type": "array",
+          "default": [],
+          "description": "Glob patterns for files or directories to exclude from scanning (e.g. \"README.md\", \"docs/**\", \"**/*.test.md\"). A pattern without a slash matches any file with that name at any depth (like .gitignore).",
+          "items": {
+            "type": "string"
+          }
         }
       }
     }

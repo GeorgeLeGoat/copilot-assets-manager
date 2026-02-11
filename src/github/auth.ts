@@ -8,9 +8,39 @@ export class AuthenticationError extends Error {
   }
 }
 
+/**
+ * Ensures that github-enterprise.uri is set in VS Code settings,
+ * copying the value from copilotAssetsManager.githubEnterpriseUrl if needed.
+ * The github-enterprise auth provider requires this setting to be present.
+ */
+async function ensureGitHubEnterpriseUri(): Promise<void> {
+  const gheUrl = vscode.workspace
+    .getConfiguration('copilotAssetsManager')
+    .get<string>('githubEnterpriseUrl', '')
+    .trim();
+
+  if (!gheUrl) {
+    return;
+  }
+
+  const gheConfig = vscode.workspace.getConfiguration('github-enterprise');
+  const existingUri = gheConfig.get<string>('uri', '').trim();
+
+  if (!existingUri) {
+    // Auto-populate github-enterprise.uri from our setting
+    await gheConfig.update('uri', gheUrl, vscode.ConfigurationTarget.Global);
+    console.log(`[Auth] Set github-enterprise.uri to: ${gheUrl}`);
+  }
+}
+
 export async function getGitHubToken(silent = false): Promise<string> {
-  const providerId = isGitHubEnterprise() ? 'github-enterprise' : 'github';
+  const usingEnterprise = isGitHubEnterprise();
+  const providerId = usingEnterprise ? 'github-enterprise' : 'github';
   const scopes = ['repo'];
+
+  if (usingEnterprise) {
+    await ensureGitHubEnterpriseUri();
+  }
 
   try {
     const session = await vscode.authentication.getSession(providerId, scopes, {
@@ -29,8 +59,22 @@ export async function getGitHubToken(silent = false): Promise<string> {
     if (error instanceof AuthenticationError) {
       throw error;
     }
+
+    const message = error instanceof Error ? error.message : String(error);
+
+    // Provide a more helpful message when github-enterprise.uri is missing
+    if (message.includes('"github-enterprise.uri" not set')) {
+      const gheUrl = vscode.workspace
+        .getConfiguration('copilotAssetsManager')
+        .get<string>('githubEnterpriseUrl', '')
+        .trim();
+      throw new AuthenticationError(
+        `GitHub Enterprise authentication failed: please add the following to your VS Code settings:\n"github-enterprise.uri": "${gheUrl || 'https://github.yourcompany.com'}"`
+      );
+    }
+
     throw new AuthenticationError(
-      `Failed to authenticate with GitHub: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to authenticate with GitHub: ${message}`
     );
   }
 }

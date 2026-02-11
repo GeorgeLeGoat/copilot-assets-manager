@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { resolveDestination, isAllowedExtension } from './patternMatcher';
+import { resolveDestination, isAllowedExtension, isExcluded } from './patternMatcher';
 
 describe('resolveDestination', () => {
   const mappings = {
@@ -103,5 +103,55 @@ describe('isAllowedExtension', () => {
 
   it('rejects files without extension', () => {
     expect(isAllowedExtension('Dockerfile', extensions)).toBe(false);
+  });
+});
+
+describe('isExcluded', () => {
+  it('returns false when no patterns are provided', () => {
+    expect(isExcluded('README.md', [])).toBe(false);
+  });
+
+  it('matches exact filename at root', () => {
+    expect(isExcluded('README.md', ['README.md'])).toBe(true);
+  });
+
+  it('matches filename in subdirectory (matchBase)', () => {
+    expect(isExcluded('docs/README.md', ['README.md'])).toBe(true);
+  });
+
+  it('matches filename deeply nested (matchBase)', () => {
+    expect(isExcluded('agents/cobol/README.md', ['README.md'])).toBe(true);
+  });
+
+  it('matches glob pattern with wildcard', () => {
+    expect(isExcluded('docs/guide.md', ['docs/**'])).toBe(true);
+  });
+
+  it('does not match when pattern is different filename', () => {
+    expect(isExcluded('SKILL.md', ['README.md'])).toBe(false);
+  });
+
+  it('matches with **/*.test.md pattern', () => {
+    expect(isExcluded('agents/cobol.test.md', ['**/*.test.md'])).toBe(true);
+  });
+
+  it('does not exclude non-matching files', () => {
+    expect(isExcluded('agents/cobol.md', ['**/*.test.md'])).toBe(false);
+  });
+
+  it('matches exact path pattern', () => {
+    expect(isExcluded('.github/CODEOWNERS', ['.github/CODEOWNERS'])).toBe(true);
+  });
+
+  it('matches dot files', () => {
+    expect(isExcluded('.gitignore', ['.gitignore'])).toBe(true);
+  });
+
+  it('supports multiple patterns (any match)', () => {
+    expect(isExcluded('README.md', ['CHANGELOG.md', 'README.md'])).toBe(true);
+  });
+
+  it('normalizes Windows backslashes before matching', () => {
+    expect(isExcluded('docs\\README.md', ['README.md'])).toBe(true);
   });
 });

@@ -71,6 +71,10 @@ export function getCheckOnStartup(): boolean {
   return getConfig().get<boolean>('checkOnStartup', true);
 }
 
+export function getExcludePatterns(): string[] {
+  return getConfig().get<string[]>('excludePatterns', []);
+}
+
 export function onConfigurationChange(
   callback: (e: vscode.ConfigurationChangeEvent) => void
 ): vscode.Disposable {

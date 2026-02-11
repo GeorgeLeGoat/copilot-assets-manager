@@ -5,7 +5,7 @@ import { ManifestManager } from './models/manifest';
 import { AssetService } from './services/assetService';
 import { SyncService } from './services/syncService';
 import { AssetsTreeProvider } from './views/assetsTreeProvider';
-import { DescriptionViewProvider } from './views/descriptionViewProvider';
+import { DescriptionWebviewProvider } from './views/descriptionWebviewProvider';
 import { StatusBarManager } from './views/statusBar';
 import { AssetTreeNode, Asset } from './models/asset';
 import { onConfigurationChange, getCheckOnStartup } from './config/settings';
@@ -33,12 +33,15 @@ export function activate(context: vscode.ExtensionContext): void {
   });
   context.subscriptions.push(treeView);
 
-  // Create description view
-  const descriptionProvider = new DescriptionViewProvider(client);
-  const descriptionView = vscode.window.createTreeView('copilotAssetsManager.descriptionView', {
-    treeDataProvider: descriptionProvider,
-  });
-  context.subscriptions.push(descriptionView);
+  // Create description webview
+  const descriptionProvider = new DescriptionWebviewProvider(context.extensionUri, client);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      'copilotAssetsManager.descriptionWebview',
+      descriptionProvider
+    )
+  );
+  console.log('[CopilotAssets] Description webview registered with ID: copilotAssetsManager.descriptionWebview');
 
   // Handle selection changes in assets view
   context.subscriptions.push(

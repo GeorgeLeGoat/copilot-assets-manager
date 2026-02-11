@@ -2,6 +2,36 @@
 
 All notable changes to the Copilot Assets Manager extension will be documented in this file.
 
+## [0.2.6] - 2026-02-07
+
+### Added
+- **Exclude Patterns**: New `copilotAssetsManager.excludePatterns` setting to hide files or directories from scanning
+  - Supports glob syntax like `.gitignore` (e.g. `README.md`, `docs/**`, `**/*.test.md`)
+  - A pattern without a slash matches any file with that name at any depth
+  - An exact path like `.github/CODEOWNERS` matches only that specific file
+  - Applied during repository scanning — excluded files never appear in the tree view
+
+## [0.2.5] - 2026-02-07
+
+### Changed
+- **Description View**: Replaced TreeView with WebView for better text display
+  - Native word-wrap and automatic line breaks
+  - Text is selectable and copyable
+  - Better visual styling with VS Code theme integration
+  - Scrollable content for long descriptions
+  - Styled container with proper padding and borders
+
+## [0.2.4] - 2026-02-07
+
+### Added
+- **Description View**: New panel below the Assets view that displays the description of the selected asset
+  - Automatically extracts description from YAML frontmatter (`description:` field)
+  - Supports multi-line descriptions with `|` or `>` syntax
+  - Falls back to Markdown `## Description` section if no frontmatter found
+  - Works for all file types: agents (`.md`), instructions (`.md`), prompts (`.md`)
+  - For skills, displays description from `SKILL.md` file
+  - Updates in real-time when selecting different assets in the tree
+
 ## [0.2.3] - 2026-02-07
 
 ### Fixed

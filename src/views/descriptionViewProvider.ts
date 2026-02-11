@@ -102,6 +102,8 @@ export class DescriptionViewProvider implements vscode.TreeDataProvider<Descript
   }
 
   getChildren(element?: DescriptionNode): DescriptionNode[] {
+    console.log('[DescriptionView] getChildren called, currentDescription:', !!this.currentDescription);
+
     if (element) {
       return [];
     }
@@ -135,17 +137,63 @@ export class DescriptionViewProvider implements vscode.TreeDataProvider<Descript
       },
     ];
 
-    // Add description lines
+    // Add description lines with word wrapping
     for (const line of lines) {
       if (line.trim()) {
-        nodes.push({
-          label: line.trim(),
-          contextValue: 'description-line',
-        });
+        // Wrap long lines at approximately 60 characters (adjust based on typical panel width)
+        const wrappedLines = this.wrapText(line.trim(), 60);
+        for (const wrappedLine of wrappedLines) {
+          nodes.push({
+            label: wrappedLine,
+            contextValue: 'description-line',
+          });
+        }
       }
     }
 
     return nodes;
+  }
+
+  /**
+   * Wraps text to a maximum line length, breaking at word boundaries
+   */
+  private wrapText(text: string, maxLength: number): string[] {
+    if (text.length <= maxLength) {
+      return [text];
+    }
+
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+      if (word.length > maxLength) {
+        // Word itself is longer than max length, break it
+        if (currentLine) {
+          lines.push(currentLine.trim());
+          currentLine = '';
+        }
+        // Split the long word into chunks
+        for (let i = 0; i < word.length; i += maxLength) {
+          lines.push(word.substring(i, i + maxLength));
+        }
+      } else if ((currentLine + ' ' + word).trim().length <= maxLength) {
+        // Word fits in current line
+        currentLine += (currentLine ? ' ' : '') + word;
+      } else {
+        // Word doesn't fit, start new line
+        if (currentLine) {
+          lines.push(currentLine.trim());
+        }
+        currentLine = word;
+      }
+    }
+
+    if (currentLine) {
+      lines.push(currentLine.trim());
+    }
+
+    return lines.length > 0 ? lines : [text];
   }
 
   dispose(): void {
